@@ -22,6 +22,15 @@ var width = 300;
 var height = 300;
 var HEIGHT_OFFSET = 50;
 
+var freeRotationFlag = false;
+var rotationSyncFlag = false;
+var currentAngleAsPerTime = 0;
+var currentAngleAsPerRotation = 0;
+var currentAngleDiff = 0;
+var currentRadAngle = 0;
+
+//var freeYRotationFlag = false;
+
 /*
 
 sepNode.setSizeMode('absolute', 'absolute', 'absolute')
@@ -79,10 +88,10 @@ buttonNode.setSizeMode('absolute', 'absolute', 'absolute')
           .setAbsoluteSize(100, 100)
           .setAlign(0.48,0.85)
 
-/*
+
 var rotateComp = new Rotation(rootNode);
-rotateComp.set(Math.PI,0,0, {duration:2000});
-*/
+rotateComp.set(0,0,0);
+
 /*
 var positionComp = new Position(rootNode);
 positionComp.set(50,0,0, {duration:2000});
@@ -202,36 +211,58 @@ var redDIV = new DOMElement(bottomNode, {
   }
 });
 
-/*
+
 var topNode = rootNode.addChild();
 
 topNode.setSizeMode('absolute', 'absolute')
           .setAbsoluteSize(width, width)
-          //.setOrigin(0.5,0.5)
-          .setRotation(-Math.PI/2,0,0)
-          .setPosition(0,0,0)
+          .setOrigin(1,0)
+          .setRotation(-Math.PI/2,-Math.PI,0)
+          .setPosition(-width,0,0)
 
 var greenDIV = new DOMElement(topNode, {
+  id : "topDom",
+
   properties:{
     'background-color':'green'
   }
 });
-*/
+
+greenDIV.setProperty('z-index',1);
 
 var spinner = scene.addComponent({
   onUpdate: function(time) {
-    //console.log(time/5000);
-    //rootNode.setRotation(time/1000,time/1000,0);
-    rootNode.setRotation(0,time/1000,0);
-    //sepNode.setRotation(0,time/1000,0);
+
+    currentAngleAsPerTime = ((time/1000) * 180 / Math.PI)%360;
+
+    console.log("Current Angle as per time " + currentAngleAsPerTime);
+
+    if(rotationSyncFlag){
 
 
-    scene.requestUpdateOnNextTick(spinner);
+      console.log("Current Angle as per rotation " + currentAngleAsPerRotation);
+
+      currentAngleDiff = currentAngleAsPerTime - currentAngleAsPerRotation;
+      rotationSyncFlag = false;
+
+
+    } else {
+
+        currentAngleAsPerRotation = currentAngleAsPerTime - currentAngleDiff
+
+        currentRadAngle = currentAngleAsPerRotation * Math.PI / 180;
+
+        rotateComp.set( -(currentRadAngle),currentRadAngle,0);
+
+    }
+
+    if(freeRotationFlag){
+        scene.requestUpdateOnNextTick(spinner);
+    }
+
   }
 });
 
-// Start spinning
-scene.requestUpdate(spinner);
 
 var topArrow = buttonNode.addChild()
 topArrow.setSizeMode('absolute', 'absolute')
@@ -239,7 +270,7 @@ topArrow.setSizeMode('absolute', 'absolute')
           .setAlign(0.25,0)
 
 var topDom = new DOMElement(topArrow, {
-
+  id : 'topButton',
   properties:{
     'width': 0,
   	'height': 0,
@@ -259,7 +290,7 @@ bottomArrow.setSizeMode('absolute', 'absolute')
           .setAlign(0.25,0.75)
 
 var bottomDom = new DOMElement(bottomArrow, {
-
+  id : 'bottomButton',
   properties:{
     'width': 0,
 	  'height': 0,
@@ -279,7 +310,7 @@ rightArrow.setSizeMode('absolute', 'absolute')
           .setAlign(0.75,0.25)
 
 var rightDom = new DOMElement(rightArrow, {
-
+  id : 'rightButton',
   properties:{
       'width': 0,
 	    'height': 0,
@@ -299,7 +330,7 @@ leftArrow.setSizeMode('absolute', 'absolute')
           .setAlign(0,0.25)
 
 var leftDom = new DOMElement(leftArrow, {
-
+  id : 'leftButton',
   properties:{
       'width': 0,
 	    'height': 0,
@@ -313,33 +344,47 @@ leftDom.setProperty('zIndex', '2');
 leftDom.setProperty('cursor', 'pointer');
 
 
+var centerArrow = buttonNode.addChild()
+centerArrow.setSizeMode('absolute', 'absolute')
+          .setAbsoluteSize(50, 50)
+          .setAlign(.25,0.25)
+
+
+var centerDom = new DOMElement(centerArrow, {
+  id : 'centerButton',
+  properties:{
+      'border-radius': '50%',
+      'background-color' : 'black'
+  }
+});
+centerDom.setProperty('zIndex', '2');
+centerDom.setProperty('cursor', 'pointer');
+
+
 
 Famous.init();
 
-/*
-var myComponent = {
-    onReceive: function(event, payload) {
-        console.log(
-            'Received ' + event + ' event!'
-            );
-        }
-    };
-rootNode.addComponent(myComponent);
-*/
+$('body').on('click','#centerButton',function(){
+
+  if(freeRotationFlag){
+    freeRotationFlag = false;
+  } else {
+    freeRotationFlag = true;
+    rotationSyncFlag = true;
+
+    // Start spinning
+    scene.requestUpdate(spinner);
+
+  }
+
+});
+
+$('body').on('click','#topDom',function(){
 
 
-frontNode.onReceive = function(e,v){
+  $('#topDom').html('<div style="z-index:1000000;width:100%;height:99%;"><video width="100%" height="100%" controls loop> \
+      <source src="assets/SampleVideo_1080x720_30mb.mp4" type="video/mp4"> \
+      Your browser does not support the video tag. \
+    </video></div>');
 
-    console.log(
-            'Received ' + e + ' event!'
-            );
-}
-
-
-
-setTimeout(function(){
-
-    console.log("Fired");
-    rootNode.emit("eventoo",{data : "payload"});
-
-},5000);
+});

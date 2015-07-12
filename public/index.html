@@ -23,13 +23,17 @@
             -webkit-font-smoothing: antialiased;
             -webkit-tap-highlight-color: transparent;
             -webkit-perspective: 0;
-            perspective: 1000px;
+            perspective: none;
             overflow: hidden;
+            -webkit-transform: translateZ(999999px);
+            -webkit-font-smoothing: antialiased;
+            transform-style: flat;
         }
 
         </style>
     </head>
     <body>
+        <script src="js/jquery-2.1.4.min.js"></script>
         <script src="bundle.js"></script>
     </body>
 </html>

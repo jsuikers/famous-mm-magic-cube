@@ -20,6 +20,7 @@ var rootNode = scene.addChild();
 //var height = window.innerHeight/1.5;
 var width = 300;
 var height = 300;
+var depth = 300;
 var HEIGHT_OFFSET = 50;
 
 var freeRotationFlag = false;
@@ -192,10 +193,11 @@ var leftNode = rootNode.addChild();
 leftNode.setSizeMode('absolute', 'absolute')
           .setAbsoluteSize(width, height)
           //.setOrigin(0.5,0.5)
-          .setRotation(0,Math.PI/2,0)
-          .setPosition(0,0,0)
+          .setRotation(0,3/2 * Math.PI,0)
+          .setPosition(0,0,-depth)
 
 var grayDIV = new DOMElement(leftNode, {
+  id : "leftDom",
   properties:{
     'background-color':'gray'
   }
@@ -204,13 +206,21 @@ var grayDIV = new DOMElement(leftNode, {
 
 var bottomNode = rootNode.addChild();
 
+var bottomNodeOpenStatus = false;
+
+var bottomNodeRotation = new Rotation(bottomNode);
+
+bottomNodeRotation.set(3 * Math.PI/2,0,0);
+
 bottomNode.setSizeMode('absolute', 'absolute')
           .setAbsoluteSize(width, width)
 
           .setRotation(3 * Math.PI/2,0,0)
+          //.setRotation(3/4 * Math.PI,0,0)
           .setPosition(0,height,0)
 
 var redDIV = new DOMElement(bottomNode, {
+  id : "bottomDom",
   properties:{
     'background-color':'red'
   }
@@ -457,5 +467,50 @@ $('body').on('click','#rightDom',function(){
 </div>');
 
   animateOrigami();
+
+});
+
+$('body').on('click','#leftDom',function(){
+
+
+  $('#leftDom').html('<div class="ui equal width center aligned padded grid"> \
+      <div class="row"> \
+        <div class="olive column"> \
+          Olive \
+        </div> \
+        <div class="black column"> \
+          Black \
+        </div> \
+      </div> \
+      <div class="row" style="background-color: #869D05;color: #FFFFFF;"> \
+        <div class="column">Custom Row</div> \
+      </div> \
+      <div class="row"> \
+        <div class="black column"> \
+          Black \
+        </div> \
+        <div class="olive column"> \
+          Olive \
+        </div> \
+      </div> \
+    </div>');
+
+
+
+});
+
+
+$('body').on('click','#bottomDom',function(){
+
+  if(bottomNodeOpenStatus){
+      bottomNodeRotation.set(3 * Math.PI/2,0,0,{duration : 500})
+      bottomNodeOpenStatus = false;
+  } else {
+      bottomNodeRotation.set(2.5 * Math.PI,0,0,{duration : 500});
+      bottomNodeOpenStatus = true;
+  }
+
+
+
 
 });

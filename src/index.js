@@ -130,8 +130,12 @@ frontNode.setSizeMode('absolute', 'absolute')
 
 
 var blueDIV = new DOMElement(frontNode, {
+  id : "frontDom",
   properties:{
-    'background-color':'#49afeb'
+    'background-color':'#49afeb',
+    'text-align' : 'center',
+    'line-height': '50px',
+    'font-size' : '5vh'
   }
 });
 
@@ -158,7 +162,7 @@ backNode.setSizeMode('absolute', 'absolute')
           .setRotation(0,Math.PI,0);
 
 var orangeDIV = new DOMElement(backNode, {
-  content : "Hello There",
+
     properties:{
     'background-color':'orange'
   }
@@ -176,6 +180,7 @@ rightNode.setSizeMode('absolute', 'absolute','absolute')
           .setPosition(width,0,0);
 
 var cyanDIV = new DOMElement(rightNode, {
+  id : "rightDom",
   properties:{
     'background-color':'cyan'
   }
@@ -379,6 +384,43 @@ $('body').on('click','#centerButton',function(){
 
 });
 
+function animateOrigami(){
+
+  var duration = 800;
+	var bird = Snap.select("#bird");
+  var parts = ['wing_b','head','body','wing_f'];
+  var elements = [];
+  var w = bird.attr('width');
+  var h = bird.attr('height');
+
+
+  for (var i = 0; i < parts.length; i++) {
+    var element = bird.select("#" + parts[i]);
+    element.attr('d1',element.attr('d'));
+    elements.push(element);
+  }
+
+  var anim1 = function(){
+    bird.stop().animate({height:h*.85},duration,mina.easeinout);
+    for (var i = 0; i < elements.length; i++) {
+      elements[i].stop().animate({
+        d: elements[i].attr('d2')
+      }, duration, mina.easeinout,anim2);
+  	}
+  }
+
+  var anim2 = function(){
+    bird.stop().animate({width:w, height:h},duration, mina.easeinout);
+    for (var i = 0; i < elements.length; i++) {
+      elements[i].stop().animate({
+        d: elements[i].attr('d1')
+      },duration, mina.easeinout,anim1);
+  	}
+  }
+
+  anim1();
+}
+
 $('body').on('click','#topDom',function(){
 
 
@@ -386,5 +428,34 @@ $('body').on('click','#topDom',function(){
       <source src="assets/SampleVideo_1080x720_30mb.mp4" type="video/mp4"> \
       Your browser does not support the video tag. \
     </video></div>');
+
+});
+
+$('body').on('click','#frontDom',function(){
+
+
+  $('#frontDom').html('<div style="z-index:1000000;width:100%;height:100%;"> \
+    <span>Hello</span> \
+    </br> \
+    <span>Famous</span> \
+  </div>');
+
+});
+
+$('body').on('click','#rightDom',function(){
+
+
+  $('#rightDom').html('<div style="z-index:1000000;width:100%;height:99%;" class="container"> \
+  <svg id="bird" version="1.0" xmlns="http://www.w3.org/2000/svg" width="400" height="400" viewBox="0 0 515 515"> \
+    <g transform="scale(0.5),translate(100,100)"> \
+      <path id="wing_b" d="M55 50 L375 300 L207 402Z" d2="M190 510 L375 280 L210 380Z" fill="#ED2424"/> \
+      <path id="head" d="M380 195 L488 252 L375 263Z" d2="M380 195 L478 252 L375 263Z" fill="#ED1D24"/> \
+      <path id="body" d="M20 516 L380 195 L375 300Z" d2="M20 496 L380 195 L375 280Z" fill="#BE2026"/> \
+      <path id="wing_f" d="M375 300 L220 394 L120 0Z" d2="M375 280 L210 380 L310 500Z" fill="#CB2126"/> \
+    </g> \
+  </svg> \
+</div>');
+
+  animateOrigami();
 
 });

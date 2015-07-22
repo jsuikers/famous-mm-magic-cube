@@ -140,6 +140,7 @@ var blueDIV = new DOMElement(frontNode, {
   }
 });
 
+/*
 var frontChild = frontNode.addChild();
 frontChild.setSizeMode('absolute', 'absolute')
           .setAbsoluteSize(100, 50 , 50)
@@ -151,7 +152,7 @@ var blueChildDIV = new DOMElement(frontChild, {
       'background-color':'#49ddeb'
     }
 });
-
+*/
 
 
 
@@ -278,7 +279,7 @@ var spinner = scene.addComponent({
   }
 });
 
-
+/*
 var topArrow = buttonNode.addChild()
 topArrow.setSizeMode('absolute', 'absolute')
           .setAbsoluteSize(25, 25)
@@ -358,7 +359,7 @@ var leftDom = new DOMElement(leftArrow, {
 leftDom.setProperty('zIndex', '2');
 leftDom.setProperty('cursor', 'pointer');
 
-
+*/
 var centerArrow = buttonNode.addChild()
 centerArrow.setSizeMode('absolute', 'absolute')
           .setAbsoluteSize(50, 50)
@@ -369,7 +370,7 @@ var centerDom = new DOMElement(centerArrow, {
   id : 'centerButton',
   properties:{
       'border-radius': '50%',
-      'background-color' : 'black'
+      'background-color' : 'white'
   }
 });
 centerDom.setProperty('zIndex', '2');
@@ -448,6 +449,8 @@ $('body').on('click','#frontDom',function(){
     <span>Hello</span> \
     </br> \
     <span>Famous</span> \
+    </br> \
+    <span><img src="images/famous_logo.png" height="25%" width="25%"/></span> \
   </div>');
 
 });
